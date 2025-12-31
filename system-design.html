@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>System design Questions and answers</title>
+
+    <style>
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background-color: #f4f6f8;
+        color: #111827;
+        line-height: 1.6;
+      }
+
+      nav {
+        background-color: #1e293b;
+        color: white;
+        padding: 15px 30px;
+      }
+
+      nav h1 {
+        font-size: 22px;
+      }
+
+      main {
+        padding: 30px;
+        max-width: 1000px;
+        margin: auto;
+      }
+
+      .block {
+        margin-bottom: 40px;
+      }
+
+      .block-title {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 20px;
+        color: #1e40af;
+        border-bottom: 3px solid #1e40af;
+        padding-bottom: 5px;
+      }
+
+      .question-card {
+        background: #ffffff;
+        padding: 20px;
+        margin-bottom: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+      }
+
+      .question {
+        font-size: 20px;
+        font-weight: bold;
+        color: #0f172a;
+        margin-bottom: 10px;
+      }
+
+      .answer {
+        background-color: #f1f5f9;
+        padding: 15px;
+        border-left: 4px solid #2563eb;
+        border-radius: 4px;
+      }
+
+      ul {
+        margin-top: 10px;
+        margin-left: 20px;
+      }
+
+      li {
+        margin-bottom: 6px;
+      }
+
+      .note {
+        margin-top: 10px;
+        font-style: italic;
+        color: #475569;
+      }
+
+      .highlight {
+        color: #047857;
+        font-weight: bold;
+      }
+
+      .danger {
+        color: #b91c1c;
+        font-weight: bold;
+      }
+
+      .summary {
+        background: #ecfeff;
+        border: 2px solid #06b6d4;
+        padding: 25px;
+        border-radius: 10px;
+        font-size: 18px;
+        font-weight: bold;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <button onclick="window.location.replace('/')" style="cursor: pointer">
+        Home
+      </button>
+      <h1>System design Interview Prep</h1>
+    </nav>
+
+    <main>
+      <!-- BLOCK 1 -->
+      <div class="block">
+        <div class="block-title">🔹 BLOCK 1: Architecture</div>
+
+        <div class="question-card">
+          <div class="question">
+            1️⃣ Design a scalable Order Management System (OMS) for a Swiggy- or
+            Truemeds-scale e-commerce platform. The system should allow users to
+            place orders that go through multiple states such as CREATED, PAID,
+            CONFIRMED, SHIPPED, DELIVERED, or CANCELLED. Describe the core
+            entities involved, such as Orders, OrderItems, Payment, Inventory,
+            and Shipping, and explain how state transitions are managed. Explain
+            how the system can handle high read traffic and moderate write
+            traffic, including the use of caching, read replicas, and
+            asynchronous event-driven communication between services. Discuss
+            mechanisms to ensure reliability, consistency, and fault tolerance,
+            such as idempotency keys, transactional writes, and retry
+            strategies. Finally, describe how the architecture can be extended
+            for future features like refunds, returns, and notifications while
+            remaining scalable, performant, and maintainable.
+          </div>
+          <div class="answer">
+            <p>
+              The Order Management System (OMS) for a Swiggy- or Truemeds-scale
+              e-commerce platform is built around microservices to ensure clear
+              ownership, scalability, and fault tolerance. Users place orders
+              that progress through a defined lifecycle: CREATED → PAID →
+              CONFIRMED → SHIPPED → DELIVERED or CANCELLED. Core entities
+              include Users, Orders, OrderItems, Payment, and optionally
+              Inventory and Shipping. The Order Service handles creation,
+              updates, and state transitions, the Payment Service manages
+              payment authorization, and the Inventory Service ensures stock
+              availability before confirmation. The system enforces valid order
+              state transitions through a state machine and maintains strong
+              consistency using a relational database like PostgreSQL or MySQL.
+            </p>
+            <p>
+              To support high read traffic and moderate write traffic, the
+              system employs read replicas and Redis caching for frequently
+              accessed data, such as recent orders and order statuses.
+              Asynchronous event-driven communication via Kafka or RabbitMQ
+              decouples services and ensures reliable handling of events like
+              order creation, payment success, shipment, and delivery.
+              Idempotency keys prevent duplicate orders, and transactional
+              writes with retry mechanisms guarantee no lost or inconsistent
+              orders. This design balances fault tolerance and low latency while
+              keeping services scalable and reliable.
+            </p>
+            <p>
+              The architecture is extensible for future enhancements, such as
+              adding Refund, Return, Pricing, or Notification services without
+              major changes. Horizontal scaling of service instances and
+              database replicas allows the system to handle varying load
+              efficiently, while the microservices approach ensures each
+              component has clear responsibility. Overall, this OMS design
+              provides a robust, consistent, and performant solution for
+              managing orders in a moderately high-traffic e-commerce platform
+              while remaining flexible for future growth and new features.
+            </p>
+          </div>
+        </div>
+
+        <div class="question-card">
+          <div class="question">
+            2️⃣ Here’s how your question can be rewritten as a clear, concise
+            paragraph: --- Design a **real-time notification system** similar to
+            Swiggy, Amazon, or GitHub notifications. The system should send
+            notifications for order status updates, payment success or failure,
+            and optionally promotions. It must support multiple channels,
+            including in-app real-time notifications, asynchronous email, and
+            optional SMS. Users may have multiple active devices, and critical
+            notifications must never be missed. Non-functional requirements
+            include high throughput, low latency for in-app notifications, fault
+            tolerance to prevent lost messages, scalability to millions of
+            users, and the ability to easily add new notification types. The
+            system will be built using a microservices architecture in a
+            cloud-based environment, should be event-driven, support
+            at-least-once delivery, and implement deduplication on the client or
+            server.
+          </div>
+          <div class="answer">
+            <p>
+              A real-time notification system for applications like Swiggy,
+              Amazon, or GitHub can be built using a cloud-based, microservices
+              architecture with an event-driven approach. Events such as order
+              status updates, payment success/failure, or promotions are
+              generated by services like OrderService or PaymentService and
+              published to a message broker (e.g., Kafka or RabbitMQ), which
+              ensures high throughput and at-least-once delivery. The
+              Notification Service consumes these events, determines the
+              channels (in-app, email, SMS), formats the notifications, and
+              persists them in a database for history and deduplication.
+              Deduplication is handled via unique notification IDs, either on
+              the server or client side, to prevent repeated messages.
+            </p>
+            <p>
+              For in-app notifications, active user devices are tracked in a
+              device registry, and notifications are pushed via WebSockets or
+              Firebase Cloud Messaging to all devices of a user, ensuring low
+              latency and real-time delivery. Email and SMS channels are
+              processed asynchronously through dedicated services that handle
+              retries, batching, and throttling to ensure reliability and
+              prevent overloading. Critical notifications include delivery
+              confirmation and retry mechanisms, making sure users do not miss
+              important updates even if a device is temporarily offline.
+            </p>
+            <p>
+              The system is designed to be highly scalable and fault-tolerant,
+              supporting millions of users through Kafka partitions or message
+              queues that enable horizontal scaling. Caching (e.g., Redis) can
+              be used for low-latency access to active sessions, and the modular
+              architecture allows easy addition of new notification types or
+              channels. Optional optimizations include batching promotions to
+              reduce spam, rate limiting per user or channel, and monitoring for
+              delivery success, latency, and user engagement. Overall, this
+              design ensures real-time, reliable, multi-channel notifications
+              across multiple devices while maintaining scalability and fault
+              tolerance.
+            </p>
+          </div>
+        </div>
+      </div>
+    </main>
+    <script>
+      console.log("Personal Interview Prep Loaded");
+    </script>
+  </body>
+</html>
